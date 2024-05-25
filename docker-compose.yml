@@ -28,8 +28,10 @@ services:
     image: nginx:alpine
     container_name: nginx
     restart: always
+    environment:
+      - PUBLIC_PORT
     ports:
-      - "80:80"
+      - "$PUBLIC_PORT:80"
     volumes:
         - ./nginx-conf:/etc/nginx/conf.d
 
