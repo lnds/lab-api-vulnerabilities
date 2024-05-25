@@ -1,0 +1,66 @@
+
+services:
+
+  frontend:
+    build: client
+    command: npm start
+    environment:
+      - CLIENT_PORT
+    expose:
+      - ${CLIENT_PORT}
+    depends_on:
+      - backend
+
+  backend:
+    build: backend
+    command: "node index.js"
+    restart: always
+    environment:
+      - SERVER_PORT
+      - CONNECTION_URL
+      - JWT_SECRET
+    expose:
+      - ${SERVER_PORT}
+    depends_on:
+      - postgres
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+        - ./nginx-conf:/etc/nginx/conf.d
+
+  postgres:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+      - POSTGRES_PORT=5432
+      - POSTGRES_SERVER=postgres
+    expose:
+      - 5432
+    volumes:
+      - ./data:/var/lib/postgresql/data
+
+  flyway:
+    image: flyway/flyway:7.7.0
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+      - POSTGRES_PORT=5432
+      - POSTGRES_SERVER=postgres
+      - FLYWAY_USER=${POSTGRES_USER}
+      - FLYWAY_PASSWORD=${POSTGRES_PASSWORD}
+      - FLYWAY_URL=jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      - FLYWAY_GROUP=true
+    command: -locations=filesystem:/flyway/sql -connectRetries=120 migrate
+    volumes:
+      - ./sql_migrations:/flyway/sql
+    depends_on:
+      - postgres
