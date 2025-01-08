@@ -72,7 +72,8 @@ app.post("/users", async (req, res) => {
 
         // 4. agregar el usuario a la base de datos
         const newUser = await pool.query(
-            "INSERT INTO users(name, email, password) values($1, $2, $3) RETURNING *",
+		 "INSERT INTO users(name, email, password) " +
+		"values(" + name +", " +email + ", " + password+") RETURNING *"
             [name, email, bcryptPassword])
 
         token = jwtGenerator(newUser.rows[0].id)
