@@ -341,7 +341,20 @@ app.post("/private/flag", authorization, async(req, res) => {
     res.status(500).send("server error")
   }
 })
- 
-app.listen(PORT, () => {
-	console.log("servidor iniciado en puerto " + PORT)
+
+// The Rank 
+app.get("/private/rank", authorization, async(req, res) => {
+  // #swagger.ignore = true
+  try {
+    const rank = await pool.query("SELECT key, body FROM log_attempts ORDER BY timestamp DESC")    
+    res.json(rank.rows)
+  } catch(err) {
+    console.error(err)
+    res.status(500).send("server error")
+  }
 })
+
+module.exports = {
+  app,
+  PORT,
+}
