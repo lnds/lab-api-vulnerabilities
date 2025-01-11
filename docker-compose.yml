@@ -1,6 +1,6 @@
 
 services:
-
+  # sitio web
   frontend:
     build: client
     command: npm start
@@ -10,7 +10,9 @@ services:
       - ${CLIENT_PORT}
     depends_on:
       - backend
-# comentario rguzman
+
+  # comentario rguzman
+  # api
   backend:
     build: backend
     command: "node main.js"
