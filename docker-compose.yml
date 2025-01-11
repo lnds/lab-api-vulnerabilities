@@ -10,7 +10,7 @@ services:
       - ${CLIENT_PORT}
     depends_on:
       - backend
-
+# comentario rguzman
   backend:
     build: backend
     command: "node main.js"
