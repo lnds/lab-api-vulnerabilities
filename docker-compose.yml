@@ -1,6 +1,6 @@
 
 services:
-
+  # sitio web
   frontend:
     build: client
     command: npm start
@@ -11,6 +11,7 @@ services:
     depends_on:
       - backend
 
+  # api
   backend:
     build: backend
     command: "node main.js"
